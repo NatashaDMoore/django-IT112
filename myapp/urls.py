@@ -1,9 +1,12 @@
 # myapp/urls.py
 
 from django.urls import path
-from . import views
+from .views import Home, About, Llamas, Cats  # Import class-based views
 
 urlpatterns = [
-  path("",views.home, name="home"),
-  path("about",views.about, name="about")
+    path("", Home.as_view(), name="home"),
+    path("about/", About.as_view(), name="about"),
+    path("llamas/", Llamas.as_view(), name="llamas"),
+    path("cats/", Cats.as_view(), name="cats"), 
+ 
 ]
