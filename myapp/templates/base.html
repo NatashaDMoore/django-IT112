@@ -7,8 +7,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+  <!-- Sets bootswatch theme to theme stored in user cookie else default theme -->
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/python/cpython/main/PC/icons/python.ico">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/spacelab/bootstrap.min.css">
+    {% if request.COOKIES.theme %}
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/{{ request.COOKIES.theme }}/bootstrap.min.css">
+    {% else %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    {% endif %}
+
 </head>
   
 <body>
@@ -22,18 +28,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/about">About</a>
+                  </li>
                   <li class="nav-item">
                       <a class="nav-link" href="/llamas/">Llamas</a>
                   </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/cats/">Cats</a>
-                    </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/cats/">Cats</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link" id="load-default-data">Load</a>
+                  </li>
+
                 </ul>
             </div>
         </div>
@@ -47,15 +57,46 @@
     </main>
   
 <!----- FOOTER ----->
-    <footer class="footer bg-dark text-white mt-4">
-        <div class="container">
-            <p>&copy; 2024 My Website</p>
-        </div>
-    </footer>
+  <footer class="footer bg-dark text-white mt-4">
+      <div class="container">
+          <p>&copy; 2024 My Website</p>
+       </div>
+    <div class="container">
+        {% if request.COOKIES.theme %}
+            <span class="text-muted float-right font-italic">The current theme is {{ request.COOKIES.theme|title }}. <a href="/theme">Switch Theme</a></span>
+        {% else %}
+            <span class="text-muted float-right font-italic">No theme selected. <a href="/theme">Set Theme</a></span>
+        {% endif %}
+    </div>
+  </footer>
+
 
 <!----- SCRIPT ----->
+    <!-- JavaScript for the default data link -->
+    <script>
+        document.getElementById('load-default-data').addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to load default data? This will delete all existing data.')) {
+                fetch('/load/')  // URL to trigger the view for loading default data
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status == 'success') {
+                      alert('Default data successfully loaded!');
+                    } else {
+                      alert('Failed to load default data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading default data.');
+                });
+            }
+        });
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

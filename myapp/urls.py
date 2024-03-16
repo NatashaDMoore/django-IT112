@@ -12,4 +12,5 @@ urlpatterns = [
     path("llamas/", views.Llamas.as_view(), name="llamas"),
     path("cats/", views.Cats.as_view(), name="cats"),
     path('theme/', views.ThemeView.as_view(), name='theme'),
+    path('load/', views.load_default_data_view, name='load_default_data'),
 ]

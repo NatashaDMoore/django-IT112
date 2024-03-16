@@ -5,6 +5,12 @@ from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+# Gets data from server and feeds back thru my javascript
+from django.http import JsonResponse
+# Imports function load_default_data from default_data.py
+# . means current directory and the .py is assumed
+from .default_data import load_default_data
+
 
 # CLASS FROM WHICH ALL CLASS BASED VIEWS INHERIT
 # Allows for different themes to be applied
@@ -88,13 +94,17 @@ class ThemeView(BaseView):
   template_name = 'theme.html'
 
   def get_context_data(self, **kwargs):
-      context = super().get_context_data(**kwargs)
-      # Add additional context data if needed
-      return context
+    context = super().get_context_data(**kwargs)
+    # Add additional context data if needed
+    return context
 
   def post(self, request, *args, **kwargs):
-      theme = request.POST.get('theme')
-      response = HttpResponseRedirect(reverse('theme'))
-      response.set_cookie('theme', theme)
-      return response
+    theme = request.POST.get('theme')
+    response = HttpResponseRedirect(reverse('theme'))
+    response.set_cookie('theme', theme)
+    return response
 
+#  Function based view that loads default data on click
+def load_default_data_view(request):
+  load_default_data(None)  # Call the load_default_data function
+  return JsonResponse({'status': 'success'})
