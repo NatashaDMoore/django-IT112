@@ -11,6 +11,12 @@ from django.http import JsonResponse
 # . means current directory and the .py is assumed
 from .default_data import load_default_data
 
+from django.views.generic import ListView
+from django.urls import reverse_lazy
+from .models import Invention
+
+from django.views.generic import DetailView
+
 
 # CLASS FROM WHICH ALL CLASS BASED VIEWS INHERIT
 # Allows for different themes to be applied
@@ -23,7 +29,7 @@ class BaseView(TemplateView):
     return context
 
 
-# CLASS VIEW
+# HOME VIEW
 class Home(BaseView):
   template_name = 'bootswatch.html'
 
@@ -40,7 +46,7 @@ class Home(BaseView):
     return context
 
 
-# CLASS VIEW
+# ABOUT VIEW
 class About(View):
 
   def get(self, request):
@@ -59,7 +65,7 @@ class About(View):
     return render(request, 'bootswatch.html', context)
 
 
-# CLASS VIEW
+# LLAMAS VIEW
 class Llamas(View):
 
   def get(self, request):
@@ -74,7 +80,7 @@ class Llamas(View):
     return render(request, 'bootswatch.html', context)
 
 
-# CLASS VIEW
+# CATS VIEW
 class Cats(View):
 
   def get(self, request):
@@ -87,6 +93,13 @@ class Cats(View):
         'alt_text': 'a computer generated photo of a cat in a library',
     }
     return render(request, 'bootswatch.html', context)
+
+
+# INVENTION VIEW
+class InventionDetailView(DetailView):
+  model = Invention
+  template_name = 'invention_view.html'
+  context_object_name = 'invention'
 
 
 # View to change the Bootswatch theme applied to the site
@@ -104,7 +117,14 @@ class ThemeView(BaseView):
     response.set_cookie('theme', theme)
     return response
 
+
 #  Function based view that loads default data on click
 def load_default_data_view(request):
-  load_default_data(None)  # Call the load_default_data function
+  load_default_data()  # Call the load_default_data function
   return JsonResponse({'status': 'success'})
+
+
+class InventionListView(ListView):
+  model = Invention
+  template_name = 'invention_list.html'
+  context_object_name = 'inventions'
